@@ -29,3 +29,6 @@ INSERT INTO Article (titre, contenu, categorie) VALUES ('Première victoire du S
 ALTER TABLE Article ADD CONSTRAINT fk_categorie_article FOREIGN KEY(categorie) REFERENCES Categorie(id);
 
 GRANT ALL PRIVILEGES ON mglsi_news.* TO mglsi_user IDENTIFIED BY 'passer';
+
+
+
