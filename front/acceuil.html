@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actualités</title>
     <link rel="stylesheet" href="acceuil.css">
+</head>
+<body>
     <section id="header">
         <h1 role="banner"><em><strong>ACTUALITES POLYTECHNICIENNES</strong></em></h1>
         <nav id="menu">
@@ -15,41 +17,63 @@
             <div><a href="politique.html">POLITIQUE</a></div>
         </nav>
     </section>
-</head>
-<body>
 
     <div class="page-content">
-    <h2>Les Dernieres Actualités</h2>
-
-    <div class="articles-container">
-
-        <div class="article-card">
-            <h3>Premiere Victoire du Senegal</h3>
-            <p>Le Senegal remporte sa premiere victoire dans l'histoire du pays. Malgré les difficultés, l'équipe a réussi à battre son adversaire avec un score de 2-0. Malheureusement ils perdent lamentablement leur match suivant contre la belgique a 5mn de la fin, quelle fin tragique pour les chats de la Teranga.</p>
+        <h2>Les Dernières Actualités</h2>
+        <span class="titre-separateur"></span>
+        <div class="articles-container" id="articles-container">
+            <p class="chargement">Chargement...</p>
         </div>
-
-        <div class="article-card">
-            <h3>Premiere Victoire du Senegal</h3>
-            <p>Le Senegal remporte sa premiere victoire dans l'histoire du pays. Malgré les difficultés, l'équipe a réussi à battre son adversaire avec un score de 2-0. Malheureusement ils perdent lamentablement leur match suivant contre la belgique a 5mn de la fin, quelle fin tragique pour les chats de la Teranga.</p>
-        </div>
-
-        <div class="article-card">
-            <h3>Premiere Victoire du Senegal</h3>
-            <p>Le Senegal remporte sa premiere victoire dans l'histoire du pays. Malgré les difficultés, l'équipe a réussi à battre son adversaire avec un score de 2-0. Malheureusement ils perdent lamentablement leur match suivant contre la belgique a 5mn de la fin, quelle fin tragique pour les chats de la Teranga.</p>
-        </div>
-
-        <div class="article-card">
-            <h3>Premiere Victoire du Senegal</h3>
-            <p>Le Senegal remporte sa premiere victoire dans l'histoire du pays. Malgré les difficultés, l'équipe a réussi à battre son adversaire avec un score de 2-0. Malheureusement ils perdent lamentablement leur match suivant contre la belgique a 5mn de la fin, quelle fin tragique pour les chats de la Teranga.</p>
-        </div>
-
-        <div class="article-card">
-            <h3>Premiere Victoire du Senegal</h3>
-            <p>Le Senegal remporte sa premiere victoire dans l'histoire du pays. Malgré les difficultés, l'équipe a réussi à battre son adversaire avec un score de 2-0. Malheureusement ils perdent lamentablement leur match suivant contre la belgique a 5mn de la fin, quelle fin tragique pour les chats de la Teranga.</p>
-        </div>
-
     </div>
+
+    <div id="overlay" onclick="fermerModal()">
+        <div id="modal" onclick="event.stopPropagation()">
+            <button id="modal-fermer" onclick="fermerModal()">&#x2715;</button>
+            <span id="modal-categorie"></span>
+            <h3 id="modal-titre"></h3>
+            <p id="modal-date"></p>
+            <div id="modal-contenu"></div>
+        </div>
     </div>
+
+    <footer>&copy; Copyright Touradou DGI 2026</footer>
+
+    <script>
+        fetch('../back/get_articles.php?mode=accueil')
+            .then(r => r.json())
+            .then(articles => {
+                const container = document.getElementById('articles-container');
+                container.innerHTML = '';
+                if (!articles.length) {
+                    container.innerHTML = '<p class="chargement">Aucun article disponible.</p>';
+                    return;
+                }
+                articles.forEach(a => {
+                    const div = document.createElement('div');
+                    div.className = 'article-card';
+                    div.dataset.id = a.id;
+                    div.innerHTML = `<h3>${a.titre}</h3><p class="article-meta">${a.categorie} &mdash; ${a.dateCreation.substring(0,10)}</p>`;
+                    div.addEventListener('click', () => ouvrirModal(a.id));
+                    container.appendChild(div);
+                });
+            });
+
+        function ouvrirModal(id) {
+            fetch('../back/get_article.php?id=' + id)
+                .then(r => r.json())
+                .then(a => {
+                    document.getElementById('modal-categorie').textContent = a.categorie;
+                    document.getElementById('modal-titre').textContent = a.titre;
+                    document.getElementById('modal-date').textContent = a.dateCreation.substring(0, 10);
+                    document.getElementById('modal-contenu').textContent = a.contenu;
+                    document.getElementById('overlay').classList.add('actif');
+                });
+        }
+
+        function fermerModal() {
+            document.getElementById('overlay').classList.remove('actif');
+        }
+    </script>
 
 </body>
 </html>
