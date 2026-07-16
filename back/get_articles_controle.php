@@ -3,6 +3,7 @@ require_once 'connexion_Persistance.php';
 require_once 'Article_Persistance.php';
 require_once 'Article_Service.php';
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
 
 $service   = new ArticleService(new ArticleRepository($pdo));
 $categorie = (int)($_GET['categorie'] ?? 0);
